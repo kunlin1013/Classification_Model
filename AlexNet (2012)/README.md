@@ -17,3 +17,4 @@
    - Use PCA to randomly alter the color channels.
 2. Dropout
    - This will cause the training speed to slow down.
+![AlexNet](https://github.com/kunlin1013/Classification_Model/blob/main/AlexNet%20(2012)/img/Architecture.png)
