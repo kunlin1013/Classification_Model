@@ -10,3 +10,10 @@
 2. Use the **Relu** for activation function. Traditionally, sigmoid or tanh are used as activation functions, but these functions can cause the gradient to vanish as the model depth increases.
 3. Use the **Local Response Normalization (LRN)**.
 4. Use **Dropout** in the first two layers of the fully connected layers to prevent overfitting.
+
+### Suppress overfitting
+1. Data Augmentation
+   - After image translations and horizontal reflections, a 224x224 image is randomly cropped from the 256x256 image to serve as the image for training.
+   - Use PCA to randomly alter the color channels.
+2. Dropout
+   - This will cause the training speed to slow down.
