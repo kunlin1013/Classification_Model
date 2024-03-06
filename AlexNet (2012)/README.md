@@ -1,4 +1,6 @@
 ## AlexNet (2012) - the epoch-making ancestor of Deep Learning
+- First demonstration that learned features are better than manually designed ones.
+
 ### Basic information
 - paper name: [ImageNet Classification with Deep Convolutional Neural Networks](https://papers.nips.cc/paper_files/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html)
 - author: Hinton (Teacher), Alex Krizhevsky (Student)
@@ -17,4 +19,7 @@
    - Use PCA to randomly alter the color channels.
 2. Dropout
    - This will cause the training speed to slow down.
+
+### Local Response Normalization (LRN)
+
 ![AlexNet](https://github.com/kunlin1013/Classification_Model/blob/main/AlexNet%20(2012)/img/Architecture.png)
