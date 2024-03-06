@@ -7,7 +7,7 @@
 - paper name: [ImageNet Classification with Deep Convolutional Neural Networks](https://papers.nips.cc/paper_files/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html)
 - author: Hinton (Teacher), Alex Krizhevsky (Student)
 - from: University of Toronto
-- ISLVRC (ImageNet Large Scale Visual Recognition Challenge) 2012 Champion :trophy:
+- ILSVRC (ImageNet Large Scale Visual Recognition Challenge) 2012 Champion :trophy:
 - The classification accuracy has been improved from the traditional 70%+ to 80%+.
 
 ### Novelty
