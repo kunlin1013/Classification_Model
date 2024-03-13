@@ -1,12 +1,26 @@
 ## GoogLeNet (2014) 
 - In GoogLeNet, the capital "L" is a tribute to LeNet.
 - Ideal: Regardless of the size of the object within the image, Inception can extract features using different convolutional kernels.
+![GoogLeNet](https://github.com/kunlin1013/Classification_Model/blob/main/GoogLeNet%20(2014)/img/GoogLeNet.png)
 
 ### Basic information
 - paper name: [Going deeper with convolutions](https://arxiv.org/abs/1409.4842)
 - author: Christian Szegedy
 - from: Google Inc
 - ILSVRC (ImageNet Large Scale Visual Recognition Challenge) 2014 Classification Task first runner-up :1st_place_medal: , Detection Task first runner-up :1st_place_medal:
+
+### Motivation
+
+#### Hebbian principle
+Currently, using deeper networks to enhance representation power and thereby improve accuracy results in an explosive increase in the number of parameters that need to be updated, leading to two serious problems.
+1. When the dataset is incomplete, the network is more prone to overfitting.
+2. A large number of parameters requiring updates leads to the need for substantial computational resources, resulting in high hardware costs.
+
+One way to address the aforementioned issues is to establish a sparse neural network structure, which involves replacing fully connected layers with **sparse layers**.
+
+When dealing with sparse networks, we can group neurons with high similarity in their activation patterns together by examining which neurons' activity patterns are similar to each other. This approach aligns with the Hebbian principle, which states "neurons that fire together, wire together."
+
+However, this approach introduces another problem: hardware acceleration for sparse networks is quite unfriendly. Therefore, to implement sparsity while ensuring computational efficiency, Inception extracts features using kernels of different sizes and then merges them. This method allows features with high correlation to be grouped together (e.g., one group for 1x1, another for 3x3, and yet another for 5x5 kernels).
 
 ### Architecture
 
