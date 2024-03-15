@@ -9,9 +9,7 @@
 - from: Google Inc
 - ILSVRC (ImageNet Large Scale Visual Recognition Challenge) 2014 Classification Task first runner-up :1st_place_medal: , Detection Task first runner-up :1st_place_medal:
 
-### Motivation
-
-#### Hebbian principle
+### Hebbian principle
 Currently, using deeper networks to enhance representation power and thereby improve accuracy results in an explosive increase in the number of parameters that need to be updated, leading to two serious problems.
 1. When the dataset is incomplete, the network is more prone to overfitting.
 2. A large number of parameters requiring updates leads to the need for substantial computational resources, resulting in high hardware costs.
@@ -22,6 +20,14 @@ When dealing with sparse networks, we can group neurons with high similarity in 
 
 However, this approach introduces another problem: hardware acceleration for sparse networks is quite unfriendly. Therefore, to implement sparsity while ensuring computational efficiency, Inception extracts features using kernels of different sizes and then merges them. This method allows features with high correlation to be grouped together (e.g., one group for 1x1, another for 3x3, and yet another for 5x5 kernels).
 
+### Network In Network
+GoogLeNet incorporates two concepts from Network In Network (NIN):
+1. 1x1 Convolution
+   - Dimension reduction
+   - Reduce the amount of parameters and computations
+   - Increase model depth, enhancing the capability for non-linear expression
+2. 
+
 ### Architecture
 
 
@@ -29,9 +35,6 @@ However, this approach introduces another problem: hardware acceleration for spa
 1. Introduce the **Inception structure** (integrating feature information of different scales).
 2. Use **1x1 convolutional kernels**.
    - Why? Because the problem with the naive Inception is that as the number of channels increases, it leads to an explosion in computation.
-   - Dimension reduction
-   - Reduce the amount of parameters and computations
-   - Increase model depth, enhancing the capability for non-linear expression
 4. Add two auxiliary classifiers to aid in training.
    - As the network deepens, it may encounter the problem of **gradient vanishing.** Therefore, the idea is to use intermediate layers to assist in prediction.
    - The loss function during training : 
