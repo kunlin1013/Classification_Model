@@ -29,8 +29,10 @@ GoogLeNet incorporates two concepts from Network In Network (NIN):
 2. Global Average Pooling (GAP)
    - Represent a channel with a single average value
    - Replace the fully connected layer to reduce the number of parameters
+   - Improved the top-1 accuracy by 0.6%
 
 ### Architecture
+![Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/GoogLeNet%20(2014)/img/Architecture.png)
 
 
 ### Novelty
@@ -42,5 +44,6 @@ GoogLeNet incorporates two concepts from Network In Network (NIN):
    - The loss function during training : 
      -  $L = L_{final{\kern 3pt}layer} + 0.3 * L_{auxiliary{\kern 3pt}classifier1} + 0.3 * L_{auxiliary{\kern 3pt}classifier2}$
    - It will remove auxiliary classifiers in the testing part.
+   - The auxiliary classifiers were proven to be of little use, so the authors removed them in the Inception v2/v3 paper.
 6. Discard the fully connected layers and use a global average pooling layer (significantly reducing the model parameters).
 
