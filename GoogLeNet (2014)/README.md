@@ -33,7 +33,8 @@ GoogLeNet incorporates two concepts from Network In Network (NIN):
 
 ### Architecture
 ![Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/GoogLeNet%20(2014)/img/Architecture.png)
-
+![inception](https://github.com/kunlin1013/Classification_Model/blob/main/GoogLeNet%20(2014)/img/inception.png)
+The right image is an improved version of the Inception module, using 1x1 convolution for dimensionality reduction.
 
 ### Novelty
 1. Introduce the **Inception structure** (integrating feature information of different scales).
