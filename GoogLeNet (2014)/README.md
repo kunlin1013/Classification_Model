@@ -34,6 +34,7 @@ GoogLeNet incorporates two concepts from Network In Network (NIN):
 ### Architecture
 ![Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/GoogLeNet%20(2014)/img/Architecture.png)
 The **3x3 reduce refers** to the 1x1 convolution before the 3x3 convolution.
+The **pool proj** corresponds to the 1x1 convolution after pooling.
 
 ![inception](https://github.com/kunlin1013/Classification_Model/blob/main/GoogLeNet%20(2014)/img/inception.png)
 The right image is an improved version of the Inception module, using 1x1 convolution for dimensionality reduction.
