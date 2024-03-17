@@ -26,7 +26,9 @@ GoogLeNet incorporates two concepts from Network In Network (NIN):
    - Dimension reduction
    - Reduce the amount of parameters and computations
    - Increase model depth, enhancing the capability for non-linear expression
-2. 
+2. Global Average Pooling (GAP)
+   - Represent a channel with a single average value
+   - Replace the fully connected layer to reduce the number of parameters
 
 ### Architecture
 
