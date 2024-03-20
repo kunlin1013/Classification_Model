@@ -2,6 +2,7 @@ from tensorflow.keras import layers, Sequential
 
 class Inception(layers.Layer):
     # In the GoogLeNet paper, 'red' means 'reduction'
+    # **kwargs is used for conveniently passing in the names of the layers
     def __init__(self, ch1x1, ch3x3red, ch3x3, ch5x5red, ch5x5, pool_proj, **kwargs):
         super(Inception, self).__init__(**kwargs)
         
