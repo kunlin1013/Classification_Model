@@ -31,3 +31,25 @@ class Inception(layers.Layer):
         branch4 = self.branch4(inputs)
         outputs = layers.concatenate([branch1, branch2, branch3, branch4])                                          # Concatenate the outputs of all branches along the channel dimension
         return outputs
+    
+class InceptionAux(layers.Layer):
+    def __init__(self, num_classes, **kwargs):
+        super(InceptionAux, self).__init__(**kwargs)
+        self.averagePool = layers.AvgPool2D(pool_size=5, strides=3)
+        self.conv = layers.Conv2D(128, kernel_size=1, activation="relu")
+
+        self.fc1 = layers.Dense(1024, activation="relu")
+        self.fc2 = layers.Dense(num_classes)
+        self.softmax = layers.Softmax()
+
+    def call(self, inputs, **kwargs):
+        x = self.averagePool(inputs)                # auxiliary classifier1: N x 512 x 14 x 14, auxiliary classifier2: N x 528 x 14 x 14
+        x = self.conv(x)                            # auxiliary classifier1: N x 512 x 4 x 4, auxiliary classifier2: N x 528 x 4 x 4
+        x = layers.Flatten()(x)                     # N x 128 x 4 x 4
+        x = layers.Dropout(rate=0.7)(x)
+        x = self.fc1(x)                             # N x 2048
+        x = layers.Dropout(rate=0.7)(x)
+        x = self.fc2(x)                             # N x 1024
+        x = self.softmax(x)                         # N x num_classes
+
+        return x
