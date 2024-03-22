@@ -40,7 +40,6 @@ def GoogLeNet(input_shape=(224,224,3), nclass=1000):
     x = Dropout(rate=0.4, name="output_dropout")(x)
     aux3 = Dense(nclass, activation='softmax', name='aux_3')(x)                                             # output(None, nclass)
 
-
     model = Model(inputs=input_, outputs=[aux1, aux2, aux3])
     model.summary()
     return model
