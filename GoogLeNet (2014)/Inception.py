@@ -5,6 +5,13 @@ class Inception(layers.Layer):
     # **kwargs is used for conveniently passing in the names of the layers
     def __init__(self, ch1x1, ch3x3red, ch3x3, ch5x5red, ch5x5, pool_proj, **kwargs):
         super(Inception, self).__init__(**kwargs)
+        self.ch1x1 = ch1x1
+        self.ch3x3red = ch3x3red
+        self.ch3x3 = ch3x3
+        self.ch5x5red = ch5x5red
+        self.ch5x5 = ch5x5
+        self.pool_proj = pool_proj
+
         
         # Single 1x1 convolution layer
         self.branch1 = layers.Conv2D(ch1x1, kernel_size=1, activation="relu")
@@ -32,9 +39,22 @@ class Inception(layers.Layer):
         outputs = layers.concatenate([branch1, branch2, branch3, branch4])                                          # Concatenate the outputs of all branches along the channel dimension
         return outputs
     
+    def get_config(self):
+        config = super(Inception, self).get_config()
+        config.update({
+            'ch1x1': self.ch1x1, 
+            'ch3x3red': self.ch3x3red,
+            'ch3x3': self.ch3x3,
+            'ch5x5red': self.ch5x5red,
+            'ch5x5': self.ch5x5,
+            'pool_proj': self.pool_proj
+        })
+        return config
+    
 class InceptionAux(layers.Layer):
     def __init__(self, num_classes, **kwargs):
         super(InceptionAux, self).__init__(**kwargs)
+        self.num_classes = num_classes
         self.averagePool = layers.AvgPool2D(pool_size=5, strides=3)
         self.conv = layers.Conv2D(128, kernel_size=1, activation="relu")
 
@@ -53,3 +73,10 @@ class InceptionAux(layers.Layer):
         x = self.softmax(x)                         # N x num_classes
 
         return x
+    
+    def get_config(self):
+        config = super(InceptionAux, self).get_config()
+        config.update({
+            'num_classes': self.num_classes
+        })
+        return config
