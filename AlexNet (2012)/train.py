@@ -1,0 +1,140 @@
+import matplotlib.pyplot as plt 
+import time
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+import tensorflow as tf
+from model import AlexNet
+
+import sys
+sys.path.append("..")
+from lib.split_data import split_data
+from lib.load_data import DataGenerator_train
+from collections import defaultdict
+
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        # Currently, memory growth needs to be the same across GPUs
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+        # Memory growth must be set before GPUs have been initialized
+        print(e)
+
+@tf.function
+def train_step(model, batch, loss_object, optimizer, train_accuracy , train_loss):
+    image, label_true = batch
+    with tf.GradientTape() as tape:
+        predictions = model(image, training=True)
+        loss = loss_object(label_true, predictions)
+    gradients = tape.gradient(loss, model.trainable_variables)
+    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+
+    train_accuracy(label_true, predictions)
+    train_loss(loss)
+    
+    return loss
+    
+@tf.function
+def val_step(model, batch, loss_object, val_accuracy, val_loss):
+    image, label_true = batch
+    predictions = model(image, training=False)
+    v_loss = loss_object(label_true, predictions)
+
+    val_loss(v_loss)
+    val_accuracy(label_true, predictions)
+    return v_loss
+
+# Set training hyperparameters 
+BATCH_SIZE = 32
+LEARNING_RATE = 0.0001
+LEARNING_RATE_DECAY_FACTOR = 0.08
+LEARNING_RATE_DECAY_PATIENCE = 3
+EARLY_STOPPING_PATIENCE = 8
+EPOCHS = 100
+CSVPATH = r"..\..\Dataset\sports.csv"
+
+if __name__ == '__main__':
+    # Load training data and divide into two parts: training set and testing set 
+    split_ratio = 0.3
+    train_data, val_data = split_data(CSVPATH, split_ratio=split_ratio)
+
+    # Use DataGenerator to generate train batch and val batch
+    train, train_count = DataGenerator_train(dir='train', data_dict=train_data, IsAugmentation=True, batch_size=BATCH_SIZE)
+    val, val_count = DataGenerator_train(dir='val', data_dict=val_data, IsAugmentation=True, batch_size=BATCH_SIZE)
+    
+    model = AlexNet(input_shape=(224,224,3), nclass=100)
+    loss_object = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE)
+    
+    train_loss = tf.keras.metrics.Mean(name='train_loss')
+    train_accuracy = tf.keras.metrics.CategoricalAccuracy(name='train_accuracy')
+    
+    val_loss = tf.keras.metrics.Mean(name='val_loss')
+    val_accuracy = tf.keras.metrics.CategoricalAccuracy(name='val_accuracy')
+    
+    # Prepare dataset from train and val and calculate train/val step
+    train_dataset = train.repeat()
+    val_dataset = val.repeat()
+    train_steps = train_count // BATCH_SIZE
+    val_steps = val_count // BATCH_SIZE
+
+    best_test_loss = float('inf')
+    history = defaultdict(list)
+    for epoch in range(EPOCHS):
+        start_time = time.time()
+        print("Epoch {}/{}".format(epoch+1, EPOCHS))
+        
+        # Optimize the model using the training data
+        train_loss.reset_states()        # clear history info
+        train_accuracy.reset_states()    # clear history info
+        i_step = 0
+        for batch in train_dataset:
+            loss = train_step(model, batch, loss_object, optimizer, train_accuracy, train_loss)
+            print("\rStep {}, loss: {:.6f} ".format(i_step, tf.reduce_mean(loss)), end='')
+            i_step += 1
+        
+        print(', loss (epoch): {:.6f}, acc (epoch): {:.2f}% '.format(train_loss.result(), train_accuracy.result()*100))
+        history['loss'].append(train_loss.result())
+        history['accuracy'].append(train_accuracy.result())
+            
+        # Evaluate on the validation data
+        val_loss.reset_states()         # clear history info
+        val_accuracy.reset_states()     # clear history info
+        i_step = 0
+        for batch in val_dataset:
+            loss = val_step(model, batch, loss_object, val_accuracy, val_loss)
+            print("\rStep {}, loss: {:.6f} ".format(i_step, tf.reduce_mean(loss)), end='')
+            i_step += 1
+        
+        print(', loss (epoch): {:.6f}, acc (epoch): {:.2f}% '.format(val_loss.result(), val_accuracy.result()*100))
+        history['loss'].append(val_loss.result())
+        history['accuracy'].append(val_accuracy.result())
+        
+        end_time = time.time()
+        print("Time taken: {:.2f} s".format(end_time - start_time))
+        
+        if val_loss.result() < best_test_loss:
+            model.save_weights(f'model_weights_{epoch}_{val_loss:.3f}.h5'.format())
+        
+    # plot training history
+    plt.figure(dpi=300)
+    plt.plot(history['accuracy'], label='accuracy')
+    plt.plot(history['val_accuracy'], label = 'val_accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.legend()
+    plt.savefig('training_history.png')
+
+    plt.figure(dpi=300)
+    plt.plot(history['loss'], label='loss')
+    plt.plot(history['val_loss'], label = 'val_loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.savefig('loss_history.png')
+
+tf.config.experimental.set_memory_growth(gpus[0],True)
