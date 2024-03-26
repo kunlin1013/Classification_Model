@@ -79,6 +79,8 @@ if __name__ == '__main__':
 
     best_test_loss = float('inf')
     history = defaultdict(list)
+    patience_counter_learningrate = 0
+    patience_counter_earlystopping = 0
     for epoch in range(EPOCHS):
         start_time = time.time()
         print("Epoch {}/{}".format(epoch+1, EPOCHS))
@@ -117,15 +119,30 @@ if __name__ == '__main__':
             model.save_weights(model_savepath)
             print(f'Epoch {epoch+1:05d}: val_acc improved from {best_test_loss:.5f} to {val_loss.result():.5f}, saving model {model_savepath}')
             best_test_loss = val_loss.result()
+            patience_counter_learningrate = 0
+            patience_counter_earlystopping = 0
+        else:
+            patience_counter_learningrate += 1
+            patience_counter_earlystopping += 1
+        
+        if patience_counter_learningrate >= LEARNING_RATE_DECAY_PATIENCE:
+            new_lr = optimizer.learning_rate * LEARNING_RATE_DECAY_FACTOR
+            print(f'Reducing learning rate to {new_lr:.6f}.')
+            optimizer.learning_rate = new_lr
+            patience_counter_learningrate = 0
+        
+        if patience_counter_earlystopping >= EARLY_STOPPING_PATIENCE:
+            print("Early stopping...")
+            break
         
     # plot training history
     plt.figure(dpi=300)
     plt.plot(history['accuracy'], label='accuracy')
-    plt.plot(history['val_accuracy'], label = 'val_accuracy')
+    plt.plot(history['val_accuracy'], label = 'val_accuracy')  
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.legend()
-    plt.savefig('training_history.png')
+    plt.savefig('accuracy_history.png')
 
     plt.figure(dpi=300)
     plt.plot(history['loss'], label='loss')
