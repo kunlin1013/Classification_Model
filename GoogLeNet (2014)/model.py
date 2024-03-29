@@ -45,7 +45,6 @@ def GoogLeNet(input_shape=(224,224,3), nclass=1000, aux_logits=False):
     else:
         model = Model(inputs=input_, outputs=aux3)
 
-    model.summary()
     return model
 
 if __name__ == '__main__':
