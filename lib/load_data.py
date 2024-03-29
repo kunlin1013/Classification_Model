@@ -75,6 +75,8 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
         data = data.map(lambda x, y: image_augmentation(x, y), AUTOTUNE) # augment only the training dataset
     
     # Add all the settings
+    # cache(): Allows the read data to be stored in cache memory for repeated use thereafter.
+    # prefetch(): During training, simultaneously read the next batch of data and perform transformations.
     data = data.cache()
     data = data.batch(batch_size)
     data = data.prefetch(AUTOTUNE)
