@@ -4,7 +4,7 @@ from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, La
 from tensorflow.keras.models import Model
 
 
-def GoogLeNet(input_shape=(224,224,3), nclass=1000):
+def GoogLeNet(input_shape=(224,224,3), nclass=1000, aux_logits=False):
     input_ = Input(shape = input_shape)                                                                     # output(None, 224, 224, 3)
     x = Conv2D(64, kernel_size=7, strides=2, padding="SAME", activation="relu", name="conv2d_1")(input_)    # output(None, 112, 112, 64)
     x = MaxPool2D(pool_size=3, strides=2, padding="SAME", name="maxpool_1")(x)                              # output(None, 56, 56, 64)
@@ -40,7 +40,11 @@ def GoogLeNet(input_shape=(224,224,3), nclass=1000):
     x = Dropout(rate=0.4, name="output_dropout")(x)
     aux3 = Dense(nclass, activation='softmax', name='aux_3')(x)                                             # output(None, nclass)
 
-    model = Model(inputs=input_, outputs=[aux1, aux2, aux3])
+    if aux_logits:
+        model = Model(inputs=input_, outputs=[aux1, aux2, aux3])
+    else:
+        model = Model(inputs=input_, outputs=aux3)
+
     model.summary()
     return model
 
