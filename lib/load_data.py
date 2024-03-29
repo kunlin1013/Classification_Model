@@ -71,11 +71,11 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
     def load_dataset(x, y):
         return tf.data.Dataset.from_tensors(load_and_preprocess_img(x, y))
     data = data.map(lambda x, y: load_and_preprocess_img(x, y), AUTOTUNE)
-    data = data.cache()
     if dir == "train" and IsAugmentation:
         data = data.map(lambda x, y: image_augmentation(x, y), AUTOTUNE) # augment only the training dataset
     
     # Add all the settings
+    data = data.cache()
     data = data.batch(batch_size)
     data = data.prefetch(AUTOTUNE)
     
