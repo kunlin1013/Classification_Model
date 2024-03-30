@@ -1,34 +1,66 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from shutil import copy, rmtree
+import os
+import random
 
-def split_data(csvpath: str, split_ratio: float=0.3):
-    df_csv = pd.read_csv(csvpath)
-    train_set = df_csv[df_csv['data set'] == "train"]
+def mk_file(file_path: str):
+    if os.path.exists(file_path):
+        # If the folder exists, delete the original folder and then recreate it
+        rmtree(file_path)
+    os.makedirs(file_path)
 
-    train_data, val_data = train_test_split(train_set, test_size=0.3, random_state=42)
+FULLDATAPATH = r"..\..\Dataset\flower_photos\FullDataSet"
+SAVEPATH = r"..\..\Dataset\flower_photos"
+
+def main():
+    random.seed(0)
     
-    # Find the maximum number of each category
-    class_counts = train_data['class id'].value_counts()
-    max_count = class_counts.max()
-
-    balanced_train_data = pd.DataFrame()
-    for class_id, _ in class_counts.items():
-        class_data = train_data[train_data['class id'] == class_id]
-        
-        # Calculate the number of resamples needed
-        resample_count = max_count - class_data.shape[0]
-        
-        # Perform resampling if necessary
-        if resample_count > 0:
-            resampled_data = class_data.sample(n=resample_count, replace=True, random_state=42)
-            class_data_balanced = pd.concat([class_data, resampled_data])
-        else:
-            class_data_balanced = class_data
-        
-        balanced_train_data = pd.concat([balanced_train_data, class_data_balanced])
-        
-    # Convert to dictionaries
-    balanced_train_data = balanced_train_data.to_dict('list')
-    val_data = val_data.to_dict('list')
+    # Define the split ratio.
+    train_rate = 0.7
+    val_rate = 0.2
     
-    return balanced_train_data, val_data
+    assert os.path.exists(FULLDATAPATH), "path '{}' does not exist.".format(FULLDATAPATH)
+    
+    flower_class = [cla for cla in os.listdir(FULLDATAPATH)
+                    if os.path.isdir(os.path.join(FULLDATAPATH, cla))]
+    
+    # Create folders to save the training set, validation set, and test set
+    train_root = os.path.join(SAVEPATH, "train")
+    val_root = os.path.join(SAVEPATH, "val")
+    test_root = os.path.join(SAVEPATH, "test")
+    mk_file(train_root)
+    mk_file(val_root)
+    mk_file(test_root)
+    for cla in flower_class:
+        mk_file(os.path.join(train_root, cla))
+        mk_file(os.path.join(val_root, cla))
+        mk_file(os.path.join(test_root, cla))
+    
+    for cla in flower_class:
+        cla_path = os.path.join(FULLDATAPATH, cla)
+        images = os.listdir(cla_path)
+        num = len(images)
+        random.shuffle(images)
+        train_num = int(num * train_rate)
+        val_num = int(num * val_rate)
+        
+        for i, image in enumerate(images):
+            image_path = os.path.join(cla_path, image)
+            if i < train_num:
+                # 分配至训练集
+                new_path = os.path.join(train_root, cla)
+            elif i < train_num + val_num:
+                # 分配至验证集
+                new_path = os.path.join(val_root, cla)
+            else:
+                # 分配至测试集
+                new_path = os.path.join(test_root, cla)
+            copy(image_path, new_path)
+            print("\r[{}] processing [{}/{}]".format(cla, i+1, num), end="")  # processing bar
+        print()
+    
+    print("Processing done!")
+
+if __name__ == '__main__':
+    main()
