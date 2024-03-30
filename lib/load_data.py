@@ -1,7 +1,36 @@
 import imgaug.augmenters as iaa
 import tensorflow as tf
 import numpy as np
+import os
+import json
 
+def get_data_dict(datasetpath: str, dir: str, classindex: str):
+    fulldatapath = os.path.join(datasetpath, dir)
+    assert os.path.exists(fulldatapath), "path '{}' does not exist.".format(fulldatapath)
+    
+    # Read the class index file
+    with open(classindex, 'r') as f:
+        class_index = json.load(f)
+    
+    filepaths = []
+    class_ids = []
+
+    for class_name in os.listdir(fulldatapath):
+        class_folder = os.path.join(fulldatapath, class_name)
+        if os.path.isdir(class_folder):
+            for img_filename in os.listdir(class_folder):
+                img_path = os.path.join(class_folder, img_filename)
+                filepaths.append(img_path)
+                class_ids.append(class_index[class_name])
+    
+    # output for dict
+    result_dict = {
+        'filepaths': filepaths,
+        'class id': class_ids
+    }
+    
+    return result_dict
+                
 def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, batch_size: int = 32):
     
     AUTOTUNE = tf.data.experimental.AUTOTUNE
@@ -87,16 +116,14 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
 
 
 # # ========================== to test if the program works ========================== 
-# import sys
 # import matplotlib.pyplot as plt
-# sys.path.append("..")
-# from lib.split_data import split_data
 
-# CSVPATH = r"..\..\Dataset\sports.csv"
-# train_data, val_data = split_data(CSVPATH)
+# DATASETPATH = r"..\..\Dataset\flower_photos"
+# CLASSINDEX = r"..\..\Dataset\flower_photos/class_index.json"
+# train_data =  get_data_dict(DATASETPATH, "val", CLASSINDEX)
 # BATCH_SIZE = 32
 
-# train, train_count = DataGenerator_train(dir='train', data_dict=train_data, IsAugmentation=True, batch_size=BATCH_SIZE)
+# train, train_count = DataGenerator_train(dir='val', data_dict=train_data, IsAugmentation=True, batch_size=BATCH_SIZE)
 
 # # get the first batch from a data generator
 # for img_batch, label_batch in train.take(1):
