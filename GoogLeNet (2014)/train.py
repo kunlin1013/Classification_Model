@@ -7,8 +7,7 @@ from model import GoogLeNet
 
 import sys
 sys.path.append("..")
-from lib.split_data import split_data
-from lib.load_data import DataGenerator_train
+from lib.load_data import get_data_dict, DataGenerator_train
 from collections import defaultdict
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
@@ -26,52 +25,30 @@ if gpus:
 def replicate_labels(image, label):
     return image, (label, label, label)
 
-@tf.function
-def train_step(model, batch, loss_object, optimizer, train_accuracy , train_loss):
-    image, label_true = batch
-    with tf.GradientTape() as tape:
-        aux1, aux2, output = model(image, training=True)
-        loss1 = loss_object(label_true, aux1)
-        loss2 = loss_object(label_true, aux2)
-        loss3 = loss_object(label_true, output)
-        loss = loss1*0.3 + loss2*0.3 + loss3
-    gradients = tape.gradient(loss, model.trainable_variables)
-    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
-
-    train_accuracy(label_true, output)
-    train_loss(loss)
-    
-    return loss
-    
-@tf.function
-def val_step(model, batch, loss_object, val_accuracy, val_loss):
-    image, label_true = batch
-    _, _, output = model(image, training=False)
-    v_loss = loss_object(label_true, output)
-
-    val_loss(v_loss)
-    val_accuracy(label_true, output)
-    return v_loss
-
 # Set training hyperparameters 
 BATCH_SIZE = 32
-LEARNING_RATE = 0.01
-LEARNING_RATE_DECAY_FACTOR = 0.08
+LEARNING_RATE = 0.0003
+LEARNING_RATE_DECAY_FACTOR = 0.5
 LEARNING_RATE_DECAY_PATIENCE = 3
 EARLY_STOPPING_PATIENCE = 8
 EPOCHS = 100
-CSVPATH = r"..\..\Dataset\sports.csv"
+DATASETPATH = r"..\..\Dataset\flower_photos"
+CLASSINDEX = r"..\..\Dataset\flower_photos/class_index.json"
 
 if __name__ == '__main__':
+    # create direction for saving weights
+    if not os.path.exists("save_weights"):
+        os.makedirs("save_weights")
+    
     # Load training data and divide into two parts: training set and testing set 
-    split_ratio = 0.3
-    train_data, val_data = split_data(CSVPATH, split_ratio=split_ratio)
+    train_data =  get_data_dict(DATASETPATH, "train", CLASSINDEX)
+    val_data =  get_data_dict(DATASETPATH, "val", CLASSINDEX)
 
     # Use DataGenerator to generate train batch and val batch
     train_ds, train_count = DataGenerator_train(dir='train', data_dict=train_data, IsAugmentation=False, batch_size=BATCH_SIZE)
     val_ds, val_count = DataGenerator_train(dir='val', data_dict=val_data, IsAugmentation=False, batch_size=BATCH_SIZE)
     
-    model = GoogLeNet(input_shape=(224,224,3), nclass=100, aux_logits=True)
+    model = GoogLeNet(input_shape=(224,224,3), nclass=5, aux_logits=True)
     model.summary()
     
     # using keras low level api for training
@@ -83,7 +60,31 @@ if __name__ == '__main__':
     
     val_loss = tf.keras.metrics.Mean(name='val_loss')
     val_accuracy = tf.keras.metrics.CategoricalAccuracy(name='val_accuracy')
+    
+    @tf.function
+    def train_step(images, labels):
+        with tf.GradientTape() as tape:
+            aux1, aux2, output = model(images, training=True)
+            loss1 = loss_object(labels, aux1)
+            loss2 = loss_object(labels, aux2)
+            loss3 = loss_object(labels, output)
+            loss = loss1 * 0.3 + loss2 * 0.3 + loss3
+        gradients = tape.gradient(loss, model.trainable_variables)
+        optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 
+        train_loss(loss)
+        train_accuracy(labels, output)
+        return loss
+
+    @tf.function
+    def val_step(images, labels):
+        _, _, output = model(images, training=False)
+        v_loss = loss_object(labels, output)
+
+        val_loss(v_loss)
+        val_accuracy(labels, output)
+        return v_loss
+    
     best_test_loss = float('inf')
     history = defaultdict(list)
     patience_counter_learningrate = 0
@@ -96,12 +97,12 @@ if __name__ == '__main__':
         train_loss.reset_states()        # clear history info
         train_accuracy.reset_states()    # clear history info
         i_step = 0
-        for batch in train_ds:
-            loss = train_step(model, batch, loss_object, optimizer, train_accuracy, train_loss)
+        for index, (images, labels) in enumerate(train_ds):
+            loss = train_step(images, labels)
             print("\rStep {}, loss: {:.6f} ".format(i_step, tf.reduce_mean(loss)), end='')
             i_step += 1
         
-        print(', loss (epoch): {:.6f}, acc (epoch): {:.2f}% '.format(train_loss.result(), train_accuracy.result()*100))
+        print(', train_loss: {:.6f}, train_acc: {:.2f}% '.format(train_loss.result(), train_accuracy.result()*100))
         history['loss'].append(train_loss.result())
         history['accuracy'].append(train_accuracy.result())
             
@@ -109,12 +110,12 @@ if __name__ == '__main__':
         val_loss.reset_states()         # clear history info
         val_accuracy.reset_states()     # clear history info
         i_step = 0
-        for batch in val_ds:
-            loss = val_step(model, batch, loss_object, val_accuracy, val_loss)
+        for index, (images, labels) in enumerate(val_ds):
+            loss = val_step(images, labels)
             print("\rStep {}, loss: {:.6f} ".format(i_step, tf.reduce_mean(loss)), end='')
             i_step += 1
         
-        print(', loss (epoch): {:.6f}, acc (epoch): {:.2f}% '.format(val_loss.result(), val_accuracy.result()*100))
+        print(', val_loss : {:.6f}, val_acc : {:.2f}% '.format(val_loss.result(), val_accuracy.result()*100))
         history['val_loss'].append(val_loss.result())
         history['val_accuracy'].append(val_accuracy.result())
         
@@ -122,7 +123,7 @@ if __name__ == '__main__':
         print("Time taken: {:.2f} s".format(end_time - start_time))
         
         if val_loss.result() < best_test_loss:
-            model_savepath = f'model_weights_{epoch+1}_{val_loss.result():.3f}.h5'
+            model_savepath = fr'save_weights\model_weights_{epoch+1}_{val_loss.result():.3f}.h5'
             model.save_weights(model_savepath)
             print(f'Epoch {epoch+1:05d}: val_acc improved from {best_test_loss:.5f} to {val_loss.result():.5f}, saving model {model_savepath}')
             best_test_loss = val_loss.result()
