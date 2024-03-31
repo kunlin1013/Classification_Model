@@ -37,12 +37,6 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
     IMG_SIZE = [224, 224]
     
     def load_and_preprocess_img(path, label):
-        def load_numpy_file(file_path):
-            file_path = file_path.numpy()
-            file_path_str = file_path.decode()
-            numpy_array = np.load(file_path_str)
-            return numpy_array.astype("float32")
-
         image_string = tf.io.read_file(path)
         image = tf.image.decode_jpeg(image_string, channels=3)
         image = tf.image.resize(image, IMG_SIZE)
@@ -83,9 +77,7 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
         return img, label
     
     # Get path to all files
-    img_path_list = []
-    for path in data_dict['filepaths']:
-        img_path_list.append(r"..\..\Dataset" + "\\" + path.replace('/', '\\'))
+    img_path_list = data_dict['filepaths']
     label_list = data_dict['class id']
     
     print('Total samples:', len(label_list))
@@ -96,12 +88,45 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
     # Construct tf.data.Dataset
     data = tf.data.Dataset.from_tensor_slices((X, Y))
     data = data.shuffle(len(label_list))
-    
-    def load_dataset(x, y):
-        return tf.data.Dataset.from_tensors(load_and_preprocess_img(x, y))
     data = data.map(lambda x, y: load_and_preprocess_img(x, y), AUTOTUNE)
+    # cache(): Allows the read data to be stored in cache memory for repeated use thereafter.
+    data = data.cache()
     if dir == "train" and IsAugmentation:
         data = data.map(lambda x, y: image_augmentation(x, y), AUTOTUNE) # augment only the training dataset
+    
+    # Add all the settings
+    # prefetch(): During training, simultaneously read the next batch of data and perform transformations.
+    data = data.batch(batch_size)
+    data = data.prefetch(AUTOTUNE)
+    
+    total_data = len(img_path_list)
+    
+    return data, total_data
+
+def DataGenerator_test(dir: str, data_dict: dict, batch_size: int = 32):
+    
+    AUTOTUNE = tf.data.experimental.AUTOTUNE
+    IMG_SIZE = [224, 224]
+    
+    def load_and_preprocess_img(path, label):
+        image_string = tf.io.read_file(path)
+        image = tf.image.decode_jpeg(image_string, channels=3)
+        image = tf.image.resize(image, IMG_SIZE)
+        image = image / 255.0
+        return image, label
+    
+    # Get path to all files
+    img_path_list = data_dict['filepaths']
+    label_list = data_dict['class id']
+    
+    print('Total samples:', len(label_list))
+    
+    X = img_path_list
+    Y = tf.one_hot(tf.constant(label_list), depth=len(set(label_list)))
+    
+    # Construct tf.data.Dataset
+    data = tf.data.Dataset.from_tensor_slices((X, Y))
+    data = data.map(lambda x, y: load_and_preprocess_img(x, y), AUTOTUNE)
     
     # Add all the settings
     # cache(): Allows the read data to be stored in cache memory for repeated use thereafter.
@@ -114,16 +139,15 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
     
     return data, total_data
 
-
 # # ========================== to test if the program works ========================== 
 # import matplotlib.pyplot as plt
 
 # DATASETPATH = r"..\..\Dataset\flower_photos"
 # CLASSINDEX = r"..\..\Dataset\flower_photos/class_index.json"
-# train_data =  get_data_dict(DATASETPATH, "val", CLASSINDEX)
+# train_data =  get_data_dict(DATASETPATH, "train", CLASSINDEX)
 # BATCH_SIZE = 32
 
-# train, train_count = DataGenerator_train(dir='val', data_dict=train_data, IsAugmentation=True, batch_size=BATCH_SIZE)
+# train, train_count = DataGenerator_train(dir='train', data_dict=train_data, IsAugmentation=True, batch_size=BATCH_SIZE)
 
 # # get the first batch from a data generator
 # for img_batch, label_batch in train.take(1):
