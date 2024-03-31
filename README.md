@@ -20,6 +20,7 @@
 ### Model performance
 |    Model   | early stopping  epoch |   train acc (%)   |   val acc (%)   |   test acc (%)   |
 |   :----:   |       :----:          |      :----:       |     :----:      |      :----:      |
+|     VGG    |         31            |       71.87       |     66.35       |      65.59       |  
 |  GoogLeNet |         77            |       80.48       |     76.74       |      77.96       |  
  
 
