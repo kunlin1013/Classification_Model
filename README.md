@@ -20,7 +20,7 @@
 ### Model performance
 |    Model   | early stopping  epoch |   train acc (%)   |   val acc (%)   |   test acc (%)   |
 |   :----:   |       :----:          |      :----:       |     :----:      |      :----:      |
-|  GoogLeNet |         32            |       83.99       |     78.39       |                  |  
+|  GoogLeNet |         77            |       80.48       |     76.74       |               |  
  
 
 
