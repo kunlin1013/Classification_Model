@@ -22,9 +22,6 @@ if gpus:
         # Memory growth must be set before GPUs have been initialized
         print(e)
 
-def replicate_labels(image, label):
-    return image, (label, label, label)
-
 # Set training hyperparameters 
 BATCH_SIZE = 32
 LEARNING_RATE = 0.0001
