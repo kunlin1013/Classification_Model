@@ -27,7 +27,7 @@ def replicate_labels(image, label):
 
 # Set training hyperparameters 
 BATCH_SIZE = 32
-LEARNING_RATE = 0.0003
+LEARNING_RATE = 0.0001
 LEARNING_RATE_DECAY_FACTOR = 0.5
 LEARNING_RATE_DECAY_PATIENCE = 3
 EARLY_STOPPING_PATIENCE = 8
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     val_data =  get_data_dict(DATASETPATH, "val", CLASSINDEX)
 
     # Use DataGenerator to generate train batch and val batch
-    train_ds, train_count = DataGenerator_train(dir='train', data_dict=train_data, IsAugmentation=False, batch_size=BATCH_SIZE)
+    train_ds, train_count = DataGenerator_train(dir='train', data_dict=train_data, IsAugmentation=True, batch_size=BATCH_SIZE)
     val_ds, val_count = DataGenerator_train(dir='val', data_dict=val_data, IsAugmentation=False, batch_size=BATCH_SIZE)
     
     model = GoogLeNet(input_shape=(224,224,3), nclass=5, aux_logits=True)
@@ -123,6 +123,7 @@ if __name__ == '__main__':
         print("Time taken: {:.2f} s".format(end_time - start_time))
         
         if val_loss.result() < best_test_loss:
+            
             model_savepath = fr'save_weights\model_weights_{epoch+1}_{val_loss.result():.3f}.h5'
             model.save_weights(model_savepath)
             print(f'Epoch {epoch+1:05d}: val_acc improved from {best_test_loss:.5f} to {val_loss.result():.5f}, saving model {model_savepath}')
