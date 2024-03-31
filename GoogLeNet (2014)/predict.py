@@ -6,6 +6,7 @@ import numpy as np
 import sys
 sys.path.append("..")
 from lib.load_data import get_data_dict, DataGenerator_test  
+
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
