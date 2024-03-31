@@ -48,13 +48,13 @@ def main():
         for i, image in enumerate(images):
             image_path = os.path.join(cla_path, image)
             if i < train_num:
-                # 分配至训练集
+                # Assign to the training set
                 new_path = os.path.join(train_root, cla)
             elif i < train_num + val_num:
-                # 分配至验证集
+                # Assign to the validation set
                 new_path = os.path.join(val_root, cla)
             else:
-                # 分配至测试集
+                # Assign to the test set
                 new_path = os.path.join(test_root, cla)
             copy(image_path, new_path)
             print("\r[{}] processing [{}/{}]".format(cla, i+1, num), end="")  # processing bar
