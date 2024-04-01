@@ -42,7 +42,7 @@ Different layers of ResNet architecture.
 ### Novelty
 - Ultra-deep network structure (over 1000 layers)
 - Propose the residual block
-- Use **batch normalization** to accelerate training and discard Dropout
+- Use **batch normalization** to accelerate training and discard Dropout => after each convolution and before activation.
 
 ### Residual network
 1. Easy to optimize
