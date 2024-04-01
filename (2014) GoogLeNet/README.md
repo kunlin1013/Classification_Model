@@ -1,7 +1,7 @@
 ## GoogLeNet (2014) 
 - In GoogLeNet, the capital "L" is a tribute to LeNet.
 - Ideal: Regardless of the size of the object within the image, Inception can extract features using different convolutional kernels.
-![GoogLeNet](https://github.com/kunlin1013/Classification_Model/blob/main/GoogLeNet%20(2014)/img/GoogLeNet.png)
+![GoogLeNet](https://github.com/kunlin1013/Classification_Model/blob/main/(2014)%20GoogLeNet/img/GoogLeNet.png)
 
 ### Basic information
 - paper name: [Going deeper with convolutions](https://arxiv.org/abs/1409.4842)
@@ -32,11 +32,11 @@ GoogLeNet incorporates two concepts from Network In Network (NIN):
    - Improved the top-1 accuracy by 0.6%
 
 ### Architecture
-![Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/GoogLeNet%20(2014)/img/Architecture.png)
+![Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/(2014)%20GoogLeNet/img/Architecture.png)
 The **3x3 reduce refers** to the 1x1 convolution before the 3x3 convolution.
 The **pool proj** corresponds to the 1x1 convolution after pooling.
 
-![inception](https://github.com/kunlin1013/Classification_Model/blob/main/GoogLeNet%20(2014)/img/inception.png)
+![inception](https://github.com/kunlin1013/Classification_Model/blob/main/(2014)%20GoogLeNet/img/inception.png)
 The right image is an improved version of the Inception module, using 1x1 convolution for dimensionality reduction.
 
 ### Novelty
