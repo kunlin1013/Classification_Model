@@ -46,7 +46,7 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
         def sequential_aug(img):
             img = tf.cast(img * 255, tf.uint8)
             
-            sometimes = lambda aug: iaa.Sometimes(0.3, aug)  # apply operations on 50% of input data
+            sometimes = lambda aug: iaa.Sometimes(0.8, aug)  # apply operations on 50% of input data
             seq = iaa.Sequential([sometimes(iaa.SomeOf(1, 
                                                         [iaa.Affine(scale={'x': (0.9, 1.1), 'y': (0.9, 1.1)},
                                                                     translate_percent={'x': (-0.1, 0.1), 'y': (-0.1, 0.1)},
