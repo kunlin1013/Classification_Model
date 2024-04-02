@@ -6,7 +6,7 @@
 - Briefly describe: Need to use **.\lib\split_data.py** to split data.
 
 ### Data augmentation
-- ratio: 0.3
+- ratio: 0.8
 - Type: Affine, PerspectiveTransform, AddToHueAndSaturation, Flipud, GaussianBlur, GaussianNoise, SpeckleNoise
 
 ### Parameter settings
