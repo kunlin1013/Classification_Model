@@ -54,7 +54,32 @@ Previous models were enlarged at all costs for the sake of improving scores, mak
 - paper name: [MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/abs/1801.04381)
 - author: Andrew G. Howard
 - from: Google Inc.
-  
+- Compared to MobileNetV1, MobileNetV2 has higher accuracy and a smaller model size.
+
+### Identified problems
+In MobileNetV1, many people found that after training, some of the parameters of the depthwise convolution kernels are zero.
+=> The depthwise convolution did not function effectively.
+=> MobileNetV2 will improve on this issue.
+
+### Inverted Residuals
+(a) Residual block
+  - 1 x 1 convolution for dimension reduction
+  - 3 x 3 convolution
+  - 1 x 1 convolution for dimension increase
+
+(b) Inverted residual block
+  - 1 x 1 convolution for dimension increase
+  - 3 x 3 convolution
+  - 1 x 1 convolution for dimension reduction
+  - activation function: **Relu6** = $min(max(x, 0), 6)$
+![Inverted Residuals](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Inverted%20Residuals.jpg)
+![Relu6](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Relu6.png)
+
+### Novelty
+- Inverted Residuals
+- Linear Bottlenecks
+
+
 ## MobileNetV3 (2019) 
 ### Basic information
 - paper name: [Searching for MobileNetV3](https://arxiv.org/abs/1905.02244)
