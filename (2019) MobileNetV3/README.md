@@ -1,10 +1,6 @@
-## MobileNetV1, MobileNetV2, MobileNetV3 (2019) 
-
+## MobileNetV1 (2017)
 ### Basic information
-- paper name:
-  - [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/abs/1704.04861)
-  - [MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/abs/1801.04381)
-  - [Searching for MobileNetV3](https://arxiv.org/abs/1905.02244)
+- paper name: [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/abs/1704.04861)
 - author: Andrew G. Howard
 - from: Google Inc.
 
@@ -45,6 +41,22 @@ Previous models were enlarged at all costs for the sake of improving scores, mak
   Given the same input and obtaining 4 feature maps as the output, the number of parameters in depthwise separable convolution is approximately **1/3** of that in a normal convolution.
 
 ### Architecture
+![MobileNetV1 Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/MobileNetV1%20Architecture.jpg)
 
 ### Novelty
+- Depthwise separable convolution => This significantly reduces the computational cost and the number of parameters.
+- Increase the hyperparameters $\alpha$ and $\rho$
+  - $\alpha$ : Width Multiplier, control the number of convolution kernels
+  - $\rho$ : Resolution Multiplier, image size
 
+## MobileNetV2 (2018)
+### Basic information
+- paper name: [MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/abs/1801.04381)
+- author: Andrew G. Howard
+- from: Google Inc.
+  
+## MobileNetV3 (2019) 
+### Basic information
+- paper name: [Searching for MobileNetV3](https://arxiv.org/abs/1905.02244)
+- author: Andrew G. Howard
+- from: Google Inc.
