@@ -1,8 +1,9 @@
-## MobileNetV1 (2017)
+# MobileNetV1 (2017)
 ### Basic information
 - paper name: [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/abs/1704.04861)
 - author: Andrew G. Howard
 - from: Google Inc.
+- CVPR 2017
 
 ### Identified problems
 Previous models were enlarged at all costs for the sake of improving scores, making them impractical for real-time implementation on mobile devices. To address this issue, Google introduced MobileNet.
@@ -49,12 +50,13 @@ Previous models were enlarged at all costs for the sake of improving scores, mak
   - $\alpha$ : Width Multiplier, control the number of convolution kernels
   - $\rho$ : Resolution Multiplier, image size
 
-## MobileNetV2 (2018)
+# MobileNetV2 (2018)
 ### Basic information
 - paper name: [MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/abs/1801.04381)
 - author: Andrew G. Howard
 - from: Google Inc.
-- Compared to MobileNetV1, MobileNetV2 has higher accuracy and a smaller model size.
+- Compared to MobileNetV1, MobileNetV2 has **higher accuracy** and a **smaller model size**.
+- CVPR 2018
 
 ### Identified problems
 In MobileNetV1, many people found that after training, some of the parameters of the depthwise convolution kernels are zero.
@@ -67,20 +69,28 @@ In MobileNetV1, many people found that after training, some of the parameters of
   - 3 x 3 convolution
   - 1 x 1 convolution for dimension increase
 
-(b) Inverted residual block
+(b)   residual block
   - 1 x 1 convolution for dimension increase
   - 3 x 3 convolution
   - 1 x 1 convolution for dimension reduction
   - activation function: **Relu6** = $min(max(x, 0), 6)$
 ![Inverted Residuals](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Inverted%20Residuals.jpg)
-![Relu6](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Relu6.png)
+![Bottleneck Block](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Bottleneck%20Block.png)
+
+### Linear Bottlenecks
+In Inverted Residuals, the last convolutional layer uses a **linear activation function** to avoid information loss.
+![Mobilenet V2](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Mobilenet%20V2.jpg)
+**A shortcut connection is only present when stride=1 and the shape of the input feature matrix is the same as the output feature matrix.**
+
+### Architecture
+![MobileNetV2 Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/MobileNetV2%20Architecture.jpg)
 
 ### Novelty
 - Inverted Residuals
 - Linear Bottlenecks
 
 
-## MobileNetV3 (2019) 
+# MobileNetV3 (2019) 
 ### Basic information
 - paper name: [Searching for MobileNetV3](https://arxiv.org/abs/1905.02244)
 - author: Andrew G. Howard
