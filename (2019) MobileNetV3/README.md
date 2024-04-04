@@ -84,11 +84,14 @@ In Inverted Residuals, the last convolutional layer uses a **linear activation f
 
 ### Architecture
 ![MobileNetV2 Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/MobileNetV2%20Architecture.jpg)
+- $t$ : expansion factor
+- $c$ : output channels
+- $n$ : the number of times the bottleneck is repeated.
+- $s$ : stride (for the first layer, others are 1)
 
 ### Novelty
 - Inverted Residuals
 - Linear Bottlenecks
-
 
 # MobileNetV3 (2019) 
 ### Basic information
