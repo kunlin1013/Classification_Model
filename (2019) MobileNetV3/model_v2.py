@@ -103,7 +103,7 @@ def MobileNetV2(input_shape=(224,224,3), nclass=1000, alpha=1.0, round_nearest=8
 
     # building classifier
     x = layers.GlobalAveragePooling2D()(x)  # pool + flatten
-    x = layers.Dropout(0.2)(x)
+    # x = layers.Dropout(0.2)(x)
     x = layers.Dense(nclass, name='Logits')(x)
     output = layers.Softmax()(x)
 
