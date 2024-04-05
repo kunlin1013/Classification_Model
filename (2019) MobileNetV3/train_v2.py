@@ -123,7 +123,7 @@ if __name__ == '__main__':
         
         if val_loss.result() < best_test_loss:
             
-            model_savepath = fr'save_weights\model_weights_{epoch+1}_{val_loss.result():.3f}.h5'
+            model_savepath = fr'save_weights_v2\model_weights_{epoch+1}_{val_loss.result():.3f}.h5'
             model.save_weights(model_savepath)
             print(f'Epoch {epoch+1:05d}: val_acc improved from {best_test_loss:.5f} to {val_loss.result():.5f}, saving model {model_savepath}')
             best_test_loss = val_loss.result()
@@ -150,7 +150,7 @@ if __name__ == '__main__':
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.legend()
-    plt.savefig('accuracy_history.png')
+    plt.savefig('accuracy_history_v2.png')
 
     plt.figure(dpi=300)
     plt.plot(history['loss'], label='loss')
@@ -158,6 +158,6 @@ if __name__ == '__main__':
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend()
-    plt.savefig('loss_history.png')
+    plt.savefig('loss_history_v2.png')
 
 tf.config.experimental.set_memory_growth(gpus[0],True)
