@@ -98,3 +98,10 @@ In Inverted Residuals, the last convolutional layer uses a **linear activation f
 - paper name: [Searching for MobileNetV3](https://arxiv.org/abs/1905.02244)
 - author: Andrew G. Howard
 - from: Google Inc.
+- More accurate and efficient than v2.
+
+### Novelty
+- Update Block (bneck) => Modified from v2's Residual block.
+- Use Neural Network Search (NAS) to search parameters.
+- Optimize the time-consuming layers of the network.
+- Use h-wish instead of ReLU6 as the activation function.
