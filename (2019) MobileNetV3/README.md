@@ -121,16 +121,21 @@ In Inverted Residuals, the last convolutional layer uses a **linear activation f
 
 ### Architecture
 - MobileNetV3-Large
+  
 ![MobileNetV3-Large Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/MobileNetV3-Large%20Architecture.png)
-  - $exp \  size$ : increase dimension (for 1x1 conv)
-  - $out$ : output channels
-  - $SE$ : Whether to use Squeeze-And-Excite block
-  - $NL$ : the type of nonlinearity used (activation func)
-    - $HS$ : hard swish
-    - $RE$ : relu
-  - $s$ : stride
+
+```
+exp size : increase dimension (for 1x1 conv)
+#out : output channels
+SE : Whether to use Squeeze-And-Excite block
+NL : the type of nonlinearity used (activation func)
+HS : hard swish
+RE : relu
+s : stride
+```
 
 - MobileNetV3-Small
+
 ![MobileNetV3-Small Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/MobileNetV3-Small%20Architecture.png)
 
 ### Novelty
