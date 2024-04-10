@@ -94,10 +94,7 @@ def MobileNetV2(input_shape=(224,224,3), nclass=1000, alpha=1.0, round_nearest=8
         output_channel = _make_divisible(c * alpha, round_nearest)
         for i in range(n):
             stride = s if i == 0 else 1
-            x = block(x.shape[-1],
-                      output_channel,
-                      stride,
-                      expand_ratio=t)(x)
+            x = block(x.shape[-1], output_channel, stride, expand_ratio=t)(x)
     # building last several layers
     x = ConvBNReLU(last_channel, kernel_size=1, name='Conv_1')(x)
 
