@@ -69,7 +69,7 @@ In MobileNetV1, many people found that after training, some of the parameters of
   - 3 x 3 convolution
   - 1 x 1 convolution for dimension increase
 
-(b)   residual block
+(b) Inverted residual block
   - 1 x 1 convolution for dimension increase
   - 3 x 3 convolution
   - 1 x 1 convolution for dimension reduction
@@ -80,6 +80,7 @@ In MobileNetV1, many people found that after training, some of the parameters of
 ### Linear Bottlenecks
 In Inverted Residuals, the last convolutional layer uses a **linear activation function** to avoid information loss.
 ![Mobilenet V2](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Mobilenet%20V2.jpg)
+
 **A shortcut connection is only present when stride=1 and the shape of the input feature matrix is the same as the output feature matrix.**
 
 ### Architecture
@@ -99,6 +100,44 @@ In Inverted Residuals, the last convolutional layer uses a **linear activation f
 - author: Andrew G. Howard
 - from: Google Inc.
 - More accurate and efficient than v2.
+
+### Update block
+1. Add Squeeze-and-Excite block: assign greater weight to the channels considered more important
+    - The number of channels in the first FC layer is 1/4 of those after pooling.
+    - The number of channels in the second FC layer is the same as after pooling.
+![Bneck](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Bneck.png)
+![SE example](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/SE example.png)
+
+2. Redesign the activation function
+    - $swish(x) = x \cdot \sigma(x)$
+      - Computation and differentiation are complex, and not friendly to the quantization process.
+    - $hard-sigmoid = \frac{\text{ReLU6}(x+3)}{6}$
+      - It is helpful for the network's inference speed.
+    - $h-swish(x) = x \cdot \frac{\text{ReLU6}(x + 3)}{6}$ (final version)
+
+### Optimize the time-consuming layers
+- Reduce the number of convolution kernels in the first convolutional layer (32 => 16)
+- Streamline the last stage.
+![Optimize layers](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Optimize layers.png)
+
+### Architecture
+- MobileNetV3-Large
+  
+![MobileNetV3-Large Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/MobileNetV3-Large%20Architecture.png)
+
+```
+exp size : increase dimension (for 1x1 conv)
+#out : output channels
+SE : Whether to use Squeeze-And-Excite block
+NL : the type of nonlinearity used (activation func)
+HS : hard swish
+RE : relu
+s : stride
+```
+
+- MobileNetV3-Small
+
+![MobileNetV3-Small Architecture](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/MobileNetV3-Small%20Architecture.png)
 
 ### Novelty
 - Update Block (bneck) => Modified from v2's Residual block.
