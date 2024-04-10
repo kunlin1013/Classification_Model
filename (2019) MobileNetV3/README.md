@@ -69,7 +69,7 @@ In MobileNetV1, many people found that after training, some of the parameters of
   - 3 x 3 convolution
   - 1 x 1 convolution for dimension increase
 
-(b)   residual block
+(b) Inverted residual block
   - 1 x 1 convolution for dimension increase
   - 3 x 3 convolution
   - 1 x 1 convolution for dimension reduction
