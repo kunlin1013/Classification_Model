@@ -80,6 +80,7 @@ In MobileNetV1, many people found that after training, some of the parameters of
 ### Linear Bottlenecks
 In Inverted Residuals, the last convolutional layer uses a **linear activation function** to avoid information loss.
 ![Mobilenet V2](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Mobilenet%20V2.jpg)
+
 **A shortcut connection is only present when stride=1 and the shape of the input feature matrix is the same as the output feature matrix.**
 
 ### Architecture
