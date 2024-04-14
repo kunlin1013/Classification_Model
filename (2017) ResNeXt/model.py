@@ -1,5 +1,4 @@
 from tensorflow.keras import layers, Model, Sequential
-from tensorflow.keras import regularizers
 
 class ResNeXt_Bottleneck(layers.Layer):
     expansion = 2   # The number of channels in the last layer is two times that of the previous layers.
@@ -7,14 +6,13 @@ class ResNeXt_Bottleneck(layers.Layer):
     def __init__(self, out_channel, strides=1, downsample=None, cardinality=32, **kwargs):
         super(ResNeXt_Bottleneck, self).__init__(**kwargs)
         
-        self.conv1 = layers.Conv2D(out_channel, kernel_size=1, use_bias=False, kernel_regularizer=regularizers.l2(0.01), name="conv1")
+        self.conv1 = layers.Conv2D(out_channel, kernel_size=1, use_bias=False, name="conv1")
         self.bn1 = layers.BatchNormalization(momentum=0.9, epsilon=1e-5, name="conv1/BatchNorm")
         # -----------------------------------------
-        self.conv2 = layers.Conv2D(out_channel, kernel_size=3, strides=strides, padding="SAME", use_bias=False, groups=cardinality,
-                                   kernel_regularizer=regularizers.l2(0.01), name="gconv2")
+        self.conv2 = layers.Conv2D(out_channel, kernel_size=3, strides=strides, padding="SAME", use_bias=False, groups=cardinality, name="gconv2")
         self.bn2 = layers.BatchNormalization(momentum=0.9, epsilon=1e-5, name="conv2/BatchNorm")
         # -----------------------------------------
-        self.conv3 = layers.Conv2D(out_channel * self.expansion, kernel_size=1, use_bias=False, kernel_regularizer=regularizers.l2(0.01), name="conv3")
+        self.conv3 = layers.Conv2D(out_channel * self.expansion, kernel_size=1, use_bias=False, name="conv3")
         self.bn3 = layers.BatchNormalization(momentum=0.9, epsilon=1e-5, name="conv3/BatchNorm")
         # -----------------------------------------
         self.relu = layers.ReLU()
@@ -49,8 +47,8 @@ def _make_layer(block, in_channel, channel, block_num, name, strides=1):
     if strides != 1 or in_channel != channel * block.expansion:
         downsample = Sequential([
             layers.Conv2D(channel * block.expansion, kernel_size=1, strides=strides,
-                          use_bias=False, kernel_regularizer=regularizers.l2(0.01), name="conv1"),
-            layers.BatchNormalization(momentum=0.9, epsilon=1.001e-5, name="BatchNorm")
+                          use_bias=False, name="conv1"),
+            layers.BatchNormalization(momentum=0.9, epsilon=1e-5, name="BatchNorm")
         ], name="shortcut")
 
     layers_list = []
@@ -64,7 +62,7 @@ def _make_layer(block, in_channel, channel, block_num, name, strides=1):
 def _resnet(block, blocks_num, input_shape=(224,224,3), nclass=1000, include_top=True):
     input_ = layers.Input(shape=input_shape, dtype="float32")
     x = layers.Conv2D(filters=64, kernel_size=7, strides=2,
-                      padding="SAME", use_bias=False, kernel_regularizer=regularizers.l2(0.01), name="conv1")(input_)
+                      padding="SAME", use_bias=False, name="conv1")(input_)
     x = layers.BatchNormalization(momentum=0.9, epsilon=1e-5, name="conv1/BatchNorm")(x)
     x = layers.ReLU()(x)
     x = layers.MaxPool2D(pool_size=3, strides=2, padding="SAME")(x)
