@@ -86,7 +86,6 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
     
     # Construct tf.data.Dataset
     data = tf.data.Dataset.from_tensor_slices((X, Y))
-    data = data.shuffle(len(label_list))
     data = data.map(lambda x, y: load_and_preprocess_img(x, y), AUTOTUNE)
     # cache(): Allows the read data to be stored in cache memory for repeated use thereafter.
     data = data.cache()
@@ -95,6 +94,7 @@ def DataGenerator_train(dir: str, data_dict: dict, IsAugmentation: bool = True, 
     
     # Add all the settings
     # prefetch(): During training, simultaneously read the next batch of data and perform transformations.
+    data = data.shuffle(len(label_list))
     data = data.batch(batch_size)
     data = data.prefetch(AUTOTUNE)
     
