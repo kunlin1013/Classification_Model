@@ -27,7 +27,7 @@
 
 ### Novelty
 - 4 guidelines
-  - Equal channel width minimizes memory access cost (MAC)
+  - **Equal channel** width minimizes memory access cost (MAC)
   - Excessive group convolution increases MAC
   - Network fragmentation reduces degree of parallelism.
     - e.g. In the **Inception model**, the faster branches must wait for the slower branches among the four branches.
