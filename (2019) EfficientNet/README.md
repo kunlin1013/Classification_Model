@@ -20,3 +20,12 @@
 - #Layers represents how many times the layers are repeated.
 
 ### Novelty
+- Use NAS (Neural Architecture Search) to search for a rational configuration of the three parameters: image input resolution, network depth, and channel width.
+- Increasing the depth of the network can yield richer and more complex features, but excessive depth may lead to gradient vanishing and make training difficult.
+- Increasing the width of the network can capture more fine-grained features and is easier to train, but networks with large widths and shallow depths often struggle to learn deeper-level features.
+- Increasing the image resolution input to the network can potentially capture more fine-grained feature templates, but with very high input resolutions, the gain in accuracy diminishes. Additionally, high-resolution images increase the computational load.
+  - The clearer the image, the more details can be seen.
+
+![Scaling Up with Different Methods](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20EfficientNet/img/Scaling%20Up%20with%20Different%20Methods.png)
+
+**Scaling Up EfficientNet-B0 with Different Methods.**
