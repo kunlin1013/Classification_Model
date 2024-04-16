@@ -26,11 +26,11 @@ if gpus:
 
 # Set training hyperparameters 
 BATCH_SIZE = 32
-LEARNING_RATE = 0.0001
-LEARNING_RATE_DECAY_FACTOR = 0.5
+LEARNING_RATE = 0.1
+LEARNING_RATE_DECAY_FACTOR = 0.1
 LEARNING_RATE_DECAY_PATIENCE = 3
-EARLY_STOPPING_PATIENCE = 10
-EPOCHS = 100
+EARLY_STOPPING_PATIENCE = 15
+EPOCHS = 150
 DATASETPATH = r"..\..\Dataset\flower_photos"
 CLASSINDEX = r"..\..\Dataset\flower_photos/class_index.json"
 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     
     # using keras low level api for training
     loss_object = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
-    optimizer = tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE)
+    optimizer = tf.keras.optimizers.SGD(learning_rate=LEARNING_RATE, momentum=0.9)
     
     train_loss = tf.keras.metrics.Mean(name='train_loss')
     train_accuracy = tf.keras.metrics.CategoricalAccuracy(name='train_accuracy')
