@@ -106,7 +106,7 @@ In Inverted Residuals, the last convolutional layer uses a **linear activation f
     - The number of channels in the first FC layer is 1/4 of those after pooling.
     - The number of channels in the second FC layer is the same as after pooling.
 ![Bneck](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/Bneck.png)
-![SE example](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/SE example.png)
+![SE example](https://github.com/kunlin1013/Classification_Model/blob/main/(2019)%20MobileNetV3/img/SE%20example.png)
 
 2. Redesign the activation function
     - $swish(x) = x \cdot \sigma(x)$
